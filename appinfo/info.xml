@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+	<id>files_paste</id>
+	<name>Files Paste</name>
+	<summary>Paste clipboard images directly into Files</summary>
+	<description>Paste clipboard images directly into Files with Ctrl+V / Cmd+V. Supports screenshots, photos, and other images from clipboard. Works in All Files, Favorites, and shared folders.</description>
+	<version>1.0.0</version>
+	<licence>AGPL-3.0-or-later</licence>
+	<author>przemek</author>
+	<category>files</category>
+	<category>tools</category>
+	<dependencies>
+		<nextcloud min-version="34" max-version="34"/>
+	</dependencies>
+	<website>https://github.com/placeholder/files_paste</website>
+	<bugs>https://github.com/placeholder/files_paste/issues</bugs>
+	<repository>https://github.com/placeholder/files_paste</repository>
+	<screenshot>https://raw.githubusercontent.com/placeholder/files_paste/main/screenshots/paste.png</screenshot>
+	<documentation>https://github.com/placeholder/files_paste#readme</documentation>
+	<namespace>FilesPaste</namespace>
+</info>

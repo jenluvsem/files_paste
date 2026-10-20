@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+  php:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - run: find lib -name '*.php' -print0 | xargs -0 -n1 php -l
+
+  release:
+    needs: [test, php]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - run: make appstore
+      # Release may already exist (created by hand with notes); upload then.
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          f=$(ls build/artifacts/*.tar.gz)
+          gh release upload "$GITHUB_REF_NAME" "$f" --clobber 2>/dev/null \
+            || gh release create "$GITHUB_REF_NAME" "$f" --title "$GITHUB_REF_NAME" --generate-notes

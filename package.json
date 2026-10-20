@@ -1,0 +1,36 @@
+{
+	"name": "files_paste",
+	"version": "1.0.0",
+	"description": "Paste clipboard images directly into Files",
+	"author": "przemek",
+	"private": true,
+	"license": "AGPL-3.0-or-later",
+	"type": "module",
+	"scripts": {
+		"build": "webpack --config webpack.config.cjs --mode production",
+		"dev": "webpack --config webpack.config.cjs --mode development --watch",
+		"lint": "tsc --noEmit",
+		"test": "vitest run --coverage",
+		"test:watch": "vitest"
+	},
+	"dependencies": {
+		"@nextcloud/axios": "^2.4.0",
+		"@nextcloud/dialogs": "^5.3.0",
+		"@nextcloud/event-bus": "^3.2.0",
+		"@nextcloud/files": "^3.10.0",
+		"@nextcloud/l10n": "^3.2.0",
+		"@nextcloud/upload": "^1.0.0"
+	},
+	"devDependencies": {
+		"@vitest/coverage-v8": "^2.1.0",
+		"jsdom": "^25.0.0",
+		"ts-loader": "^9.5.0",
+		"typescript": "^5.6.0",
+		"vitest": "^2.1.0",
+		"webpack": "^5.95.0",
+		"webpack-cli": "^5.1.0"
+	},
+	"engines": {
+		"node": ">=20.0.0"
+	}
+}
