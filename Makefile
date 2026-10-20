@@ -1,7 +1,7 @@
 .PHONY: all appstore clean install build test lint
 
 APP_NAME=files_paste
-APP_VERSION=1.0.0
+APP_VERSION=1.0.1
 
 all: build
 
@@ -26,6 +26,7 @@ appstore: build
 	cp -r appinfo build/pkg/files_paste/
 	cp -r lib build/pkg/files_paste/
 	cp -r js build/pkg/files_paste/
+	cp -r l10n build/pkg/files_paste/
 	tar -czf build/artifacts/$(APP_NAME)-$(APP_VERSION).tar.gz -C build/pkg files_paste
 	rm -rf build/pkg
 	@echo "Built: build/artifacts/$(APP_NAME)-$(APP_VERSION).tar.gz"

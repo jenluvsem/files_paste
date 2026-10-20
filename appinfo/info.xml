@@ -3,14 +3,15 @@
 	<id>files_paste</id>
 	<name>Files Paste</name>
 	<summary>Paste clipboard images directly into Files</summary>
+	<summary lang="pl">Wklejaj obrazy ze schowka prosto do Plików</summary>
 	<description>Paste clipboard images directly into Files with Ctrl+V / Cmd+V. Supports screenshots, photos, and other images from clipboard. Works in All Files, Favorites, and shared folders.</description>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<licence>AGPL-3.0-or-later</licence>
 	<author>przemek</author>
 	<category>files</category>
 	<category>tools</category>
 	<dependencies>
-		<nextcloud min-version="34" max-version="34"/>
+		<nextcloud min-version="32" max-version="35"/>
 	</dependencies>
 	<website>https://github.com/jenluvsem/files_paste</website>
 	<bugs>https://github.com/jenluvsem/files_paste/issues</bugs>

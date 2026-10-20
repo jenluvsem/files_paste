@@ -55,7 +55,7 @@ Not supported: Recent view (no folder context)
 
 ## Requirements
 
-- Nextcloud 34.x
+- Nextcloud 32, 33, 34 and 35 (each tested end-to-end in Chromium)
 - Modern browser with clipboard API support
 
 ## Development

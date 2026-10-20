@@ -1,0 +1,11 @@
+OC.L10N.register(
+    "files_paste",
+    {
+        "You do not have permission to upload here": "Sie haben keine Berechtigung, hier hochzuladen",
+        "The image is too large": "Das Bild ist zu groß",
+        "Not enough storage space": "Nicht genügend Speicherplatz",
+        "Could not upload the image": "Das Bild konnte nicht hochgeladen werden",
+        "Pasted {name}": "{name} eingefügt",
+        "Open a folder to paste": "Öffnen Sie einen Ordner, um einzufügen"
+    },
+"nplurals=2; plural=(n != 1);");
