@@ -14,12 +14,7 @@
 		"test:watch": "vitest"
 	},
 	"dependencies": {
-		"@nextcloud/axios": "^2.4.0",
-		"@nextcloud/dialogs": "^5.3.0",
-		"@nextcloud/event-bus": "^3.2.0",
-		"@nextcloud/files": "^3.10.0",
-		"@nextcloud/l10n": "^3.2.0",
-		"@nextcloud/upload": "^1.0.0"
+		"@nextcloud/l10n": "^3.2.0"
 	},
 	"devDependencies": {
 		"@vitest/coverage-v8": "^2.1.0",

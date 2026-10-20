@@ -1,50 +1,22 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
+import { getPasteFolder } from '../../src/utils/view'
 
-// Mock @nextcloud/files before importing
-vi.mock('../../src/utils/view', () => ({
-	getCurrentFolder: vi.fn(() => '/test/folder'),
-	isSupportedView: vi.fn((hash?: string) => {
-		const h = hash || window.location.hash
-		// Simplified: return true for most cases except recent
-		return !h.includes('/recent/')
-	}),
-	showFolderRequiredToast: vi.fn(),
-}))
+const r = (view: string | undefined, dir?: string) => ({ params: { view }, query: { dir } })
 
-import { isSupportedView } from '../../src/utils/view'
-
-describe('view - isSupportedView', () => {
-	beforeEach(() => {
-		window.location.hash = ''
+describe('getPasteFolder', () => {
+	it('uses dir in the files view, root by default', () => {
+		expect(getPasteFolder(r('files', '/Kanban'))).toBe('/Kanban')
+		expect(getPasteFolder(r('files'))).toBe('/')
 	})
-
-	it('should return true for All files view', () => {
-		window.location.hash = '#/dir/'
-		
-		expect(isSupportedView()).toBe(true)
+	it('has no folder in Recent and trash', () => {
+		expect(getPasteFolder(r('recent', '/x'))).toBeNull()
+		expect(getPasteFolder(r('trashbin'))).toBeNull()
 	})
-
-	it('should return true for Favorites view', () => {
-		window.location.hash = '#/favorites/'
-		
-		expect(isSupportedView()).toBe(true)
+	it('allows favorites/shares only inside a folder', () => {
+		expect(getPasteFolder(r('favorites'))).toBeNull()
+		expect(getPasteFolder(r('favorites', '/Kanban'))).toBe('/Kanban')
 	})
-
-	it('should return true for Shared view', () => {
-		window.location.hash = '#/shared/'
-		
-		expect(isSupportedView()).toBe(true)
-	})
-
-	it('should return false for Recent view', () => {
-		window.location.hash = '#/recent/'
-		
-		expect(isSupportedView()).toBe(false)
-	})
-
-	it('should return true for main files view (no hash)', () => {
-		window.location.hash = ''
-		
-		expect(isSupportedView()).toBe(true)
+	it('has no folder without a router', () => {
+		expect(getPasteFolder(undefined)).toBeNull()
 	})
 })

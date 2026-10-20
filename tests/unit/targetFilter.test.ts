@@ -1,29 +1,25 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { shouldHandlePasteEvent } from '../../src/utils/targetFilter'
 
-// Simple mock for ClipboardEvent that doesn't actually use DataTransfer
-class MockClipboardEvent {
-	type: string
-	bubbles: boolean
-	cancelable: boolean
-	target: EventTarget | null = null
-	constructor(type: string, options?: EventInit) {
-		this.type = type
-		this.bubbles = options?.bubbles ?? false
-		this.cancelable = options?.cancelable ?? false
-	}
+const ev = (target: Element) => ({ target }) as unknown as ClipboardEvent
+const mk = (html: string) => {
+	document.body.innerHTML = html
+	return document.body.firstElementChild as HTMLElement
 }
-// @ts-ignore
-globalThis.ClipboardEvent = MockClipboardEvent
 
-describe('targetFilter', () => {
-	it('should handle paste when target is body', () => {
-		// Simulate paste on body
-		const event = new ClipboardEvent('paste', {
-			bubbles: true,
-			cancelable: true,
-		})
-		
-		expect(shouldHandlePasteEvent(event)).toBe(true)
+describe('shouldHandlePasteEvent', () => {
+	it('handles paste on the page body', () => {
+		document.body.innerHTML = ''
+		expect(shouldHandlePasteEvent(ev(document.body))).toBe(true)
+	})
+	it('ignores inputs and textareas', () => {
+		expect(shouldHandlePasteEvent(ev(mk('<input>')))).toBe(false)
+		expect(shouldHandlePasteEvent(ev(mk('<textarea></textarea>')))).toBe(false)
+	})
+	it('ignores dialogs and sidebars', () => {
+		const d = mk('<div role="dialog"><p>x</p></div>')
+		expect(shouldHandlePasteEvent(ev(d.firstElementChild as Element))).toBe(false)
+		const s = mk('<div class="app-sidebar"><p>x</p></div>')
+		expect(shouldHandlePasteEvent(ev(s.firstElementChild as Element))).toBe(false)
 	})
 })

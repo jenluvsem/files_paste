@@ -1,73 +1,23 @@
-import { showInfo } from '@nextcloud/dialogs'
-import { translate as t } from '@nextcloud/l10n'
+export interface FilesRouter {
+	params: { view?: string }
+	query: { dir?: string }
+}
+
+/** Views that have no real destination folder at their root. */
+const NO_FOLDER_VIEWS = ['recent', 'trashbin']
 
 /**
- * Get current folder path from Files router
+ * Folder to paste into, or null when the current view has none (Recent, trash,
+ * the roots of Favorites/Shares).
  */
-export function getCurrentFolder(): string {
-	// Try to get from @nextcloud/files
-	try {
-		// eslint-disable-next-line @nextcloud/namespace
-		const { getCurrentDirectory } = require('@nextcloud/files')
-		return getCurrentDirectory() || '/'
-	} catch (e) {
-		// Fallback to parsing URL hash
-		return getCurrentFolderFromHash()
+export function getPasteFolder(router: FilesRouter | undefined): string | null {
+	if (!router) {
+		return null
 	}
-}
-
-/**
- * Get folder from URL hash (fallback)
- */
-function getCurrentFolderFromHash(): string {
-	const hash = window.location.hash
-	const match = hash.match(/#\/dir\/([^?]*)/)
-	if (match && match[1]) {
-		return '/' + decodeURIComponent(match[1])
+	const view = router.params?.view ?? 'files'
+	const dir = router.query?.dir || '/'
+	if (NO_FOLDER_VIEWS.includes(view) || (view !== 'files' && dir === '/')) {
+		return null
 	}
-	return '/'
-}
-
-/**
- * Check if current view supports pasting
- * Supported: All files, Favorites, Shared (folders)
- * Not supported: Recent (no folder context)
- */
-export function isSupportedView(): boolean {
-	const hash = window.location.hash
-
-	// Recent view doesn't have a folder
-	if (hash.includes('/recent/')) {
-		return false
-	}
-
-	// Other views without folder context
-	if (!hash.includes('/dir/') && !hash.includes('/favorites/') && !hash.includes('/shared/')) {
-		// If no specific view, assume it's the main files view
-		return true
-	}
-
-	return true
-}
-
-/**
- * Show toast message when folder is required
- */
-export function showFolderRequiredToast(): void {
-	showInfo(t('files_paste', 'Open a folder to paste'))
-}
-
-/**
- * Show success toast after paste
- */
-export function showSuccessToast(filename: string): void {
-	showInfo(t('files_paste', 'Pasted {filename}', { filename }))
-}
-
-/**
- * Show error toast
- */
-export function showErrorToast(message: string): void {
-	// Using showInfo for now - could use showError for more prominence
-	showInfo(message)
+	return dir
 }

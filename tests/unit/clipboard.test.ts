@@ -1,61 +1,25 @@
-import { describe, it, expect } from 'vitest'
-import { extractImagesFromClipboard, hasImagesInClipboard, isTextOnlyClipboard } from '../../src/utils/clipboard'
+import { describe, expect, it } from 'vitest'
+import { getPastedImages } from '../../src/utils/clipboard'
 
-describe('clipboard utils', () => {
-	describe('hasImagesInClipboard', () => {
-		it('should return false when no files', () => {
-			const data = {
-				files: [] as File[],
-				items: [] as DataTransferItem[],
-			}
-			
-			// @ts-ignore - simplified mock
-			expect(hasImagesInClipboard(data)).toBe(false)
-		})
+const f = (name: string, type: string) => new File(['x'], name, { type })
+const item = (file: File) => ({ kind: 'file', type: file.type, getAsFile: () => file })
+
+describe('getPastedImages', () => {
+	it('returns every image in files, even of the same type', () => {
+		const a = f('a.png', 'image/png')
+		const b = f('b.png', 'image/png')
+		expect(getPastedImages({ files: [a, b], items: [item(a), item(b)] } as any)).toEqual([a, b])
 	})
-
-	describe('isTextOnlyClipboard', () => {
-		it('should return true when no image files', () => {
-			const data = {
-				files: [] as File[],
-				items: [] as DataTransferItem[],
-			}
-			
-			// @ts-ignore - simplified mock
-			expect(isTextOnlyClipboard(data)).toBe(true)
-		})
+	it('does not double-count files that are also listed in items', () => {
+		const a = f('a.png', 'image/png')
+		expect(getPastedImages({ files: [a], items: [item(a)] } as any)).toEqual([a])
 	})
-
-	describe('mime type detection', () => {
-		it('should recognize png as image', () => {
-			// Test the logic that recognizes image types
-			const pngMime = 'image/png'
-			const isImage = pngMime.startsWith('image/')
-			expect(isImage).toBe(true)
-		})
-
-		it('should recognize jpeg as image', () => {
-			const jpegMime = 'image/jpeg'
-			const isImage = jpegMime.startsWith('image/')
-			expect(isImage).toBe(true)
-		})
-
-		it('should recognize gif as image', () => {
-			const gifMime = 'image/gif'
-			const isImage = gifMime.startsWith('image/')
-			expect(isImage).toBe(true)
-		})
-
-		it('should recognize webp as image', () => {
-			const webpMime = 'image/webp'
-			const isImage = webpMime.startsWith('image/')
-			expect(isImage).toBe(true)
-		})
-
-		it('should NOT recognize text as image', () => {
-			const textMime = 'text/plain'
-			const isImage = textMime.startsWith('image/')
-			expect(isImage).toBe(false)
-		})
+	it('falls back to items when files is empty', () => {
+		const a = f('a.png', 'image/png')
+		expect(getPastedImages({ files: [], items: [item(a)] } as any)).toEqual([a])
+	})
+	it('ignores text and non-image files', () => {
+		const pdf = f('a.pdf', 'application/pdf')
+		expect(getPastedImages({ files: [pdf], items: [{ kind: 'string', type: 'text/plain' }] } as any)).toEqual([])
 	})
 })

@@ -17,8 +17,7 @@ class Application extends App implements IBootstrap {
 		parent::__construct(self::APP_ID, $params);
 	}
 
-	public function bootstrap(IBootContext $context): void {
-		// Nothing to do at runtime
+	public function boot(IBootContext $context): void {
 	}
 
 	public function register(IRegistrationContext $context): void {
